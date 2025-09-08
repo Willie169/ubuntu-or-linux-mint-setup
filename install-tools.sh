@@ -65,13 +65,27 @@ sudo systemctl enable tailscaled
 sudo add-apt-repository ppa:hluk/copyq -y
 sudo apt update
 sudo apt install copyq -y
-copyq autostart
-OS_VERSION_ID=$(
+copyq &
+mkdir -p ~/.config/systemd/user
+cat > ~/.config/systemd/user/copyq.service << EOF
+[Unit]
+Description=CopyQ clipboard manager
+
+[Service]
+ExecStart=copyq
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+EOF
+systemctl --user daemon-reload
+systemctl --user enable copyq.service
+UBUNTU_VERSION_ID=$(
 if grep -q '^NAME="Linux Mint"' /etc/os-release; then
     inxi -Sx | awk -F': ' '/base/{print $2}' | awk '{print $2}'
 else
-    source /etc/os-release
-    echo $VERSION_ID
+    . /etc/os-release
+    echo "$VERSION_ID"
 fi
 )
 wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg  
@@ -80,7 +94,7 @@ rm packages.microsoft.gpg
 sudo sh -c 'echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'  
 sudo apt update
 sudo apt install code -y
-wget -q https://packages.microsoft.com/config/ubuntu/$OS_VERSION_ID/packages-microsoft-prod.deb
+wget -q https://packages.microsoft.com/config/ubuntu/$UBUNTU_VERSION_ID/packages-microsoft-prod.deb
 sudo dpkg -i packages-microsoft-prod.deb
 rm packages-microsoft-prod.deb
 sudo sh -c 'echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
@@ -254,6 +268,15 @@ alias grun='java -Xmx500M -cp "/usr/local/lib/antlr-4.13.2-complete.jar:$CLASSPA
 alias src='source'
 eval "$(pyenv init --path)"
 eval "$(pyenv virtualenv-init -)"
+
+export UBUNTU_VERSION_ID=$(
+if grep -q '^NAME="Linux Mint"' /etc/os-release; then
+    inxi -Sx | awk -F': ' '/base/{print $2}' | awk '{print $2}'
+else
+    . /etc/os-release
+    echo "$VERSION_ID"
+fi
+)
 
 gpull() {
     level="${1:-0}"
