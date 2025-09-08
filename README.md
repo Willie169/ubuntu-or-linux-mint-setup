@@ -11,6 +11,16 @@ Scripts and instructions for setting up Ubuntu or Linux Mint with tools for deve
 
 ## Instructions
 
++ [GRUB](#grub)
++ [Driver Manager in Linux Mint](#driver-manager-in-linux-mint)
++ [NVIDIA](#nvidia)
++ [Steam](#steam)
++ [Fcitx5](#fcitx5)
++ [Time Mismatches When Dual Booting with Windows](#time-mismatches-when-dual-booting-with-windows)
++ [Linux Mint Ubuntu Version Tweak](#linux-mint-ubuntu-version-tweak)
++ [Desktop App Launchers](#desktop-app-launchers)
++ [VNC](#vnc)
+
 ### GRUB
 
 #### When Dual Booting with Windows
@@ -148,12 +158,9 @@ chmod +x ~/Desktop/<application_name>.desktop
 
 ### VNC
 
-After [`virtualgl-turbovnc.sh`](virtualgl-turbovnc.sh) is run, you have to configure the things according to what desktop manager and hardware you are using, before you can start VNC server with:
-```
-vncserver -xstartup ~/.vnc/xstartup
-```
+After [`virtualgl-turbovnc.sh`](virtualgl-turbovnc.sh) is run, you have to configure the things according to your desktop manager (Ubuntu usually uses GDM while Linux Mint usually uses LightDM) and GPU.
 
-#### For Nvidia and GDM (Ubuntu usually is)
+#### For Nvidia and GDM
 
 <ol>
 <li>In tty or from SSH client, run:
@@ -167,7 +174,7 @@ sudo systemctl start gdm
 </code></pre></li>
 </ol>
 
-#### For Nvidia and LightDM (Linux Mint usually is)
+#### For Nvidia and LightDM
 
 <ol>
 <li>In tty or from SSH client, run:
@@ -180,6 +187,40 @@ sudo systemctl start lightdm
 <pre><code>vglrun glxinfo
 </code></pre></li>
 </ol>
+
+#### For GDM
+
+<ol>
+<li>In tty or from SSH client, run:
+<pre><code>sudo systemctl stop gdm
+sudo systemctl start gdm
+</code></pre></li>
+<li>Re-login into your computer.</li>
+<li>Run:
+<pre><code>vglrun glxinfo
+</code></pre></li>
+</ol>
+
+#### For LightDM
+
+<ol>
+<li>In tty or from SSH client, run:
+<pre><code>sudo systemctl stop lightdm
+sudo systemctl start lightdm
+</code></pre></li>
+<li>Re-login into your computer.</li>
+<li>Run:
+<pre><code>vglrun glxinfo
+</code></pre></li>
+</ol>
+
+#### VNC Server Usage
+
+Add `alias vncserver="/opt/TurboVNC/bin/vncserver"` in `~/.bashrc` before using it, which has been done in [`virtualgl-turbovnc.sh`](virtualgl-turbovnc.sh).
+
+* Start VNC server: `vncserver`.
+* List VNC servers: `vncserver -list`.
+* Kill VNC server: `vncserver -kill :1`. Replace `:1` with your actual display number.
 
 #### Android as SSH and VNC/X Client
 
