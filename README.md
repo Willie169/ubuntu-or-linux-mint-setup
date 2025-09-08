@@ -5,7 +5,7 @@ Scripts and instructions for setting up Ubuntu or Linux Mint with tools for deve
 ## Scripts
 
 * [`install-tools.sh`](install-tools.sh): Scripts for setting up Ubuntu or Linux Mint with recommended drivers and tools for C/C++, Python3, Java8, Java11, Java17, Java21, Node.js, Rust, Go, Ruby, Perl, .NET, GitHub CLI, GitLab CLI, OpenSSL, OpenSSH, JQ, Ghostscript, FFMPEG, Maven, Zsh, Fcitx5, Flatpak, TeX Live, Pandoc, CopyQ, Tailscale, Noto CJK fonts, XITS fonts, Node.js packages, Python3 packages, pipx, Poetry, RARLAB UnRAR, Fabric, Visual Studio Code, Code::Blocks, PowerShell, ANTLR 4, Steam, Discord, Telegram, Spotify, VLC, OBS Studio, LibreOffice, OnlyOffice, Joplin, Calibre, Postman, GIMP, Krita, HandBrake, MuseScore, Aisleriot Solitaire, custom `~/.profile`, custom `~/.bashrc`, custom `~/.vimrc`, and more.
-* [`virtualgl-turbovnc.sh`](virtualgl-turbovnc.sh): Scripts for setting up VirtualGL and TurboVNC on Ubuntu or Linux Mint, compatible with NVIDIA GPU.
+* [`virtualgl-turbovnc.sh`](virtualgl-turbovnc.sh): Scripts for setting up VirtualGL and TurboVNC on Ubuntu or Linux Mint, compatible with NVIDIA GPU. See [#VNC](#vnc) for what to do after running this script.
 * [`waydroid.sh`](waydroid.sh): Scripts for installation of Waydroid on Debian derivatives.
 * [`wine.sh`](wine.sh): Scripts for installation of Wine on Debian derivatives.
 
@@ -131,10 +131,6 @@ fi
 ```
 before it and replace it with `$UBUNTU_VERSION_ID`. This has been added to `~/.bashrc` in [`install-tools.sh`](install-tools.sh).
 
-### Android as SSH and VNC/X Client
-
-See my [**Android-Non-Root**](https://github.com/Willie169/Android-Non-Root).
-
 ### Desktop App Launchers
 
 #### Command line
@@ -150,24 +146,43 @@ chmod +x ~/Desktop/<application_name>.desktop
 2. Find the app you want.
 3. Right-click and click `Add to desktop`.
 
-### After [`virtualgl-turbovnc.sh`](virtualgl-turbovnc.sh)
+### VNC
 
-After [`virtualgl-turbovnc.sh`](virtualgl-turbovnc.sh) is run, you have to configure the things according to what desktop manager and hardware you are using.
-
-#### For Nvidia and GNOME
-
-In tty or from SSH client, run:
+After [`virtualgl-turbovnc.sh`](virtualgl-turbovnc.sh) is run, you have to configure the things according to what desktop manager and hardware you are using, before you can start VNC server with:
 ```
-sudo systemctl stop gdm
+vncserver -xstartup ~/.vnc/xstartup
+```
+
+#### For Nvidia and GDM (Ubuntu usually is)
+
+<ol>
+<li>In tty or from SSH client, run:
+<pre><code>sudo systemctl stop gdm
 sudo modprobe -r nvidia_uvm nvidia_drm nvidia_modeset nvidia
 sudo systemctl start gdm
-```
+</code></pre></li>
+<li>Re-login into your computer.</li>
+<li>Run:
+<pre><code>xauth merge /etc/opt/VirtualGL/vgl_xauth_key
+xdpyinfo -display :1
+</code></pre></li>
+</ol>
 
-## Log out and log in
-# xauth merge /etc/opt/VirtualGL/vgl_xauth_key
-# xdpyinfo -display :1
-## Below is roughly the same as vncserver of tigervnc
-# /opt/TurboVNC/bin/vncserver
-## But xstartup need to be specified
-# /opt/TurboVNC/bin/vncserver -xstartup ~/.vnc/xstartup
-## You can add /opt/TurboVNC/bin to $PATH
+#### For Nvidia and LightDM (Linux Mint usually is)
+
+<ol>
+<li>In tty or from SSH client, run:
+<pre><code>sudo systemctl stop lightdm
+sudo modprobe -r nvidia_uvm nvidia_drm nvidia_modeset nvidia
+sudo systemctl start lightdm
+</code></pre></li>
+<li>Re-login into your computer.</li>
+<li>Run:
+<pre><code>xauth merge /etc/opt/VirtualGL/vgl_xauth_key
+xdpyinfo -display :1
+</code></pre></li>
+</ol>
+
+#### Android as SSH and VNC/X Client
+
+See my [**Android-Non-Root**](https://github.com/Willie169/Android-Non-Root).
