@@ -20,7 +20,7 @@ mkdir -p /etc/opt/VirtualGL
 sudo chgrp vglusers /etc/opt/VirtualGL
 sudo chmod 750 /etc/opt/VirtualGL
 cat >> ~/.bashrc << "EOF"
-export PATH="$PATH:/opt/TurboVNC/bin"
+alias vncserver="/opt/TurboVNC/bin/vncserver"
 
 EOF
 source ~/.bashrc

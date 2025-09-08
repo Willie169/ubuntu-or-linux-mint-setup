@@ -163,8 +163,7 @@ sudo systemctl start gdm
 </code></pre></li>
 <li>Re-login into your computer.</li>
 <li>Run:
-<pre><code>xauth merge /etc/opt/VirtualGL/vgl_xauth_key
-xdpyinfo -display :1
+<pre><code>vglrun glxinfo
 </code></pre></li>
 </ol>
 
@@ -178,8 +177,7 @@ sudo systemctl start lightdm
 </code></pre></li>
 <li>Re-login into your computer.</li>
 <li>Run:
-<pre><code>xauth merge /etc/opt/VirtualGL/vgl_xauth_key
-xdpyinfo -display :1
+<pre><code>vglrun glxinfo
 </code></pre></li>
 </ol>
 
