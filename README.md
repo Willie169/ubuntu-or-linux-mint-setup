@@ -6,8 +6,8 @@ Scripts and instructions for setting up Ubuntu or Linux Mint with tools for deve
 
 * [`install-tools.sh`](install-tools.sh): Scripts for setting up Ubuntu or Linux Mint with recommended drivers and tools for C/C++, Python3, Java8, Java11, Java17, Java21, Node.js, Rust, Go, Ruby, Perl, .NET, GitHub CLI, GitLab CLI, OpenSSL, OpenSSH, JQ, Ghostscript, FFMPEG, Maven, Zsh, Fcitx5, Flatpak, TeX Live, Pandoc, CopyQ, Tailscale, Noto CJK fonts, XITS fonts, Node.js packages, Python3 packages, pipx, Poetry, RARLAB UnRAR, Fabric, Visual Studio Code, Code::Blocks, PowerShell, ANTLR 4, Steam, Discord, Telegram, Spotify, VLC, OBS Studio, LibreOffice, OnlyOffice, Joplin, Calibre, Postman, GIMP, Krita, HandBrake, MuseScore, Aisleriot Solitaire, custom `~/.profile`, custom `~/.bashrc`, custom `~/.vimrc`, and more.
 * [`virtualgl-turbovnc.sh`](virtualgl-turbovnc.sh): Scripts for setting up VirtualGL and TurboVNC on Ubuntu or Linux Mint, compatible with NVIDIA GPU.
-* [`waydroid.sh`](waydroid.sh): Scripts for setting up Waydroid on Ubuntu or Linux Mint.
-* [`wine.sh`](wine.sh): Scripts for setting up Wine on Ubuntu or Linux Mint.
+* [`waydroid.sh`](waydroid.sh): Scripts for installation of Waydroid on Debian derivatives.
+* [`wine.sh`](wine.sh): Scripts for installation of Wine on Debian derivatives.
 
 ## Instructions
 
@@ -118,7 +118,7 @@ sudo timedatectl set-ntp true
 To make a script for Ubuntu work for both Ubuntu and Linux Mint, do the following tweaks:
 
 1. `$(lsb_release -cs)`: Add `source /etc/os-release` before it and replace it with `$UBUNTU_CODENAME`.
-2. `$VERSION_ID` (from `source /etc/os-release`): Add
+2. `$VERSION_ID` (from `/etc/os-release`): Add
 ```
 export UBUNTU_VERSION_ID=$(
 if grep -q '^NAME="Linux Mint"' /etc/os-release; then
@@ -134,3 +134,40 @@ before it and replace it with `$UBUNTU_VERSION_ID`. This has been added to `~/.b
 ### Android as SSH and VNC/X Client
 
 See my [**Android-Non-Root**](https://github.com/Willie169/Android-Non-Root).
+
+### Desktop App Launchers
+
+#### Command line
+
+```
+cp /usr/share/applications/<application_name>.desktop ~/Desktop/`
+chmod +x ~/Desktop/<application_name>.desktop
+```
+
+#### Linux Mint GUI
+
+1. Click **Mint menu button** (lower left corner).
+2. Find the app you want.
+3. Right-click and click `Add to desktop`.
+
+### After [`virtualgl-turbovnc.sh`](virtualgl-turbovnc.sh)
+
+After [`virtualgl-turbovnc.sh`](virtualgl-turbovnc.sh) is run, you have to configure the things according to what desktop manager and hardware you are using.
+
+#### For Nvidia and GNOME
+
+In tty or from SSH client, run:
+```
+sudo systemctl stop gdm
+sudo modprobe -r nvidia_uvm nvidia_drm nvidia_modeset nvidia
+sudo systemctl start gdm
+```
+
+## Log out and log in
+# xauth merge /etc/opt/VirtualGL/vgl_xauth_key
+# xdpyinfo -display :1
+## Below is roughly the same as vncserver of tigervnc
+# /opt/TurboVNC/bin/vncserver
+## But xstartup need to be specified
+# /opt/TurboVNC/bin/vncserver -xstartup ~/.vnc/xstartup
+## You can add /opt/TurboVNC/bin to $PATH
