@@ -19,4 +19,7 @@ sudo usermod --groups vglusers $USER
 mkdir -p /etc/opt/VirtualGL
 sudo chgrp vglusers /etc/opt/VirtualGL
 sudo chmod 750 /etc/opt/VirtualGL
-cat >> ~/.bashrc << 'export PATH="$PATH:/opt/TurboVNC/bin"'
+cat >> ~/.bashrc << EOF
+export PATH="$PATH:/opt/TurboVNC/bin"
+EOF
+source ~/.bashrc
