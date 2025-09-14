@@ -6,7 +6,7 @@ Scripts and instructions for setting up Ubuntu or Linux Mint with tools for deve
 
 * [`install-tools.sh`](install-tools.sh): Scripts for setting up Ubuntu or Linux Mint with recommended drivers and tools for C/C++, Python3, Java8, Java11, Java17, Java21, Node.js, Rust, Go, Ruby, Perl, .NET, GitHub CLI, GitLab CLI, OpenSSL, OpenSSH, JQ, Ghostscript, FFMPEG, Maven, Zsh, Fcitx5, Flatpak, TeX Live, Pandoc, CopyQ, Tailscale, Noto CJK fonts, XITS fonts, Node.js packages, Python3 packages, pipx, Poetry, RARLAB UnRAR, Fabric, Visual Studio Code, Code::Blocks, PowerShell, ANTLR 4, Steam, Discord, Telegram, Spotify, VLC, OBS Studio, LibreOffice, OnlyOffice, Joplin, Calibre, Postman, GIMP, Krita, HandBrake, MuseScore, Aisleriot Solitaire, custom `~/.profile`, custom `~/.bashrc`, custom `~/.vimrc`, and more.
 * [`virtualgl-turbovnc.sh`](virtualgl-turbovnc.sh): Scripts for setting up VirtualGL and TurboVNC on Ubuntu or Linux Mint, compatible with NVIDIA GPU. See [#VNC](#vnc) for what to do after running this script.
-* [`waydroid.sh`](waydroid.sh): Scripts for installation of Waydroid on Debian derivatives.
+* [`waydroid-ubuntu.sh`](waydroid-ubuntu.sh): Scripts for installation of Waydroid on Ubuntu. See [Waydroid on Ubuntu](#waydroid-on-ubunut) for what to do after running this script.
 * [`wine.sh`](wine.sh): Scripts for installation of Wine on Debian derivatives.
 
 ## Instructions
@@ -14,12 +14,13 @@ Scripts and instructions for setting up Ubuntu or Linux Mint with tools for deve
 + [GRUB](#grub)
 + [Driver Manager in Linux Mint](#driver-manager-in-linux-mint)
 + [NVIDIA](#nvidia)
-+ [Steam](#steam)
-+ [Fcitx5](#fcitx5)
 + [Time Mismatches When Dual Booting with Windows](#time-mismatches-when-dual-booting-with-windows)
 + [Linux Mint Ubuntu Version Tweak](#linux-mint-ubuntu-version-tweak)
 + [Desktop App Launchers](#desktop-app-launchers)
++ [Fcitx5](#fcitx5)
 + [VNC](#vnc)
++ [Waydroid on Ubuntu](#waydroid-on-ubunut)
++ [Steam](#steam)
 
 ### GRUB
 
@@ -78,39 +79,6 @@ You can install drivers (including NVIDIA driver) with `Driver Manager`, a GUI t
 and check it with <code>nvcc --version</code>.
 </ul>
 
-### Steam
-
-#### Install Steam
-
-<ol>
-<li>If you have run <a href="install-tools.sh"><code>install-tools.sh</code></a>, go to next step; otherwise, run:
-<pre><code>cd ~
-sudo dpkg --add-architecture i386
-sudo apt update
-sudo apt install libgl1:i386 -y
-wget https://cdn.fastly.steamstatic.com/client/installer/steam.deb
-sudo dpkg -i steam*.deb
-rm steam*.deb
-</code></pre></li>
-<li>Run <code>steam</code> to update and open it for the first time.</li>
-<li>Follow the instructions.</li>
-<li>Restart Steam.</li>
-<li>Follow the instructions.</li>
-</ol>
-
-#### Proton Engine
-
-1. Open Steam.
-2. Click `Steam` on the menu bar (upper left corner) and click `Settings`.
-3. Click `compatibility`.
-4. Toggle on `Enable Steam Play for all other titles` if such option exists.
-5. Select the Proton engine you want.
-6. Restart Steam. 
-
-### Fcitx5
-
-You can configure Fcitx5 in `Fcitx Configuration`, a GUI tool.
-
 ### Time Mismatches When Dual Booting with Windows
 
 If time mismatches real local time when dual booting with Windows, do the following steps:
@@ -155,6 +123,10 @@ chmod +x ~/Desktop/<application_name>.desktop
 1. Click **Mint menu button** (lower left corner).
 2. Find the app you want.
 3. Right-click and click `Add to desktop`.
+
+### Fcitx5
+
+You can configure Fcitx5 in `Fcitx Configuration`, a GUI tool.
 
 ### VNC
 
@@ -225,3 +197,111 @@ Add `alias vncserver="/opt/TurboVNC/bin/vncserver"` in `~/.bashrc` before using 
 #### Android as SSH and VNC/X Client
 
 See my [**Android-Non-Root**](https://github.com/Willie169/Android-Non-Root).
+
+### Waydroid on Ubuntu
+
+Site: <https://waydro.id>.
+Doc: <https://docs.waydro.id>.
+
+#### Install
+```
+sudo apt install curl ca-certificates -y
+curl -s https://repo.waydro.id | sudo bash
+sudo apt install waydroid -y
+```
+#### Enable Wayland on Ubuntu
+
+Method 1:
+```
+sudo nano /etc/gdm3/custom.conf
+```
+Edit:
+```
+WaylandEnable=true
+```
+an then
+```
+sudo systemctl restart gdm3
+```
+
+Method 2:
+1. Log out.
+2. In the down right corner of the login page, choose `Ubuntu on Wayland`.
+3. Login.
+
+#### Download Android
+
+1. Open Waydroid from application menu. 
+2. Choose options you want. In `Android Type`, `Vanilla` refers to a pure AOSP (Android Open-Source Project) build without any Google services, while `Gapps` refers to a build that provides access to Google services.
+3. Press `Download`, wait until `Done` button is shown, and press it.
+
+#### Network
+
+To allow network access in Waydroid, run:
+```
+sudo ufw allow 53
+sudo ufw allow 67
+sudo ufw default allow FORWARD
+```
+This has been done in [`waydroid-ubuntu.sh`](waydroid-ubuntu.sh).
+
+#### Storage
+Waydroid's home directory is:
+```
+~/.local/share/waydroid/data/media/0/
+```
+
+#### Google Play Certificate
+
+Run:
+```
+sudo waydroid shell
+```
+inside Waydroid’s shell, run:
+```
+ANDROID_RUNTIME_ROOT=/apex/com.android.runtime ANDROID_DATA=/data ANDROID_TZDATA_ROOT=/apex/com.android.tzdata ANDROID_I18N_ROOT=/apex/com.android.i18n sqlite3 /data/data/com.google.android.gsf/databases/gservices.db "select * from main where name = \"android_id\";"
+```
+Use the string of numbers printed by the command to register the device on your Google Account at <https://www.google.com/android/uncertified>.
+
+#### Remove
+
+Run:
+```
+waydroid session stop
+sudo waydroid container stop
+sudo apt remove waydroid
+sudo reboot
+```
+after rebooted, run:
+```
+sudo rm -rf /var/lib/waydroid /home/.waydroid ~/waydroid ~/.share/waydroid ~/.local/share/applications/*aydroid* ~/.local/share/waydroid
+```
+
+### Steam
+
+#### Install Steam
+
+<ol>
+<li>If you have run <a href="install-tools.sh"><code>install-tools.sh</code></a>, go to next step; otherwise, run:
+<pre><code>cd ~
+sudo dpkg --add-architecture i386
+sudo apt update
+sudo apt install libgl1:i386 -y
+wget https://cdn.fastly.steamstatic.com/client/installer/steam.deb
+sudo dpkg -i steam*.deb
+rm steam*.deb
+</code></pre></li>
+<li>Run <code>steam</code> to update and open it for the first time.</li>
+<li>Follow the instructions.</li>
+<li>Restart Steam.</li>
+<li>Follow the instructions.</li>
+</ol>
+
+#### Proton Engine
+
+1. Open Steam.
+2. Click `Steam` on the menu bar (upper left corner) and click `Settings`.
+3. Click `compatibility`.
+4. Toggle on `Enable Steam Play for all other titles` if such option exists.
+5. Select the Proton engine you want.
+6. Restart Steam.
