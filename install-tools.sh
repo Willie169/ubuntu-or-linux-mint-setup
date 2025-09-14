@@ -11,7 +11,7 @@ if grep -q '^NAME="Linux Mint"' /etc/os-release; then
     mkdir -p ~/.config/autostart
     cp /usr/share/applications/org.fcitx.Fcitx5.desktop ~/.config/autostart/
 fi
-grep -qxF 'export GTK_IM_MODULE=fcitx' ~/.xprofile || cat >> ~/.xprofile << 'EOF'
+cat >> ~/.xprofile << 'EOF'
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
