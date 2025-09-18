@@ -442,7 +442,7 @@ cat > ~/.installtmp.sh << 'EOF'
 systemctl --user disable installtmp.service
 rm ~/.config/systemd/user/installtmp.service
 rm -- "$0"
-flatpak install flathub com.discordapp.Discord org.telegram.desktop io.freetubeapp.FreeTube com.spotify.Client org.videolan.VLC com.obsproject.Studio org.onlyoffice.desktopeditors net.cozic.joplin_desktop com.calibre_ebook.calibre com.getpostman.Postman org.gimp.GIMP org.kde.krita fr.handbrake.ghb org.musescore.MuseScore flathub org.gnome.Aisleriot -y
+flatpak install flathub com.discordapp.Discord org.telegram.desktop io.freetubeapp.FreeTube com.spotify.Client org.videolan.VLC com.obsproject.Studio org.onlyoffice.desktopeditors net.cozic.joplin_desktop com.getpostman.Postman org.gimp.GIMP org.kde.krita fr.handbrake.ghb org.musescore.MuseScore flathub org.gnome.Aisleriot -y
 sudo dpkg --add-architecture i386
 sudo apt update
 sudo apt install libgl1:i386 -y
