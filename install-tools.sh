@@ -58,7 +58,7 @@ pyenv global 3.12.10
 pipx install poetry
 python3 -m venv .env
 source .env/bin/activate
-pip3 install jupyter librosa matplotlib meson ninja numpy pandas pydub scipy selenium setuptools sympy
+pip3 install jupyter librosa matplotlib meson ninja numpy pandas pydub requests scipy selenium setuptools sympy
 deactivate
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/trusted.gpg.d/docker.asc > /dev/null
 source /etc/os-release
